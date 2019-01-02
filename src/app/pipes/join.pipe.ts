@@ -5,7 +5,9 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class JoinPipe implements PipeTransform {
 
-  transform(value: any, character: string = ''): any {
-    return value.join(character);
+  transform(value: string, caracter: string = '', lastItem: boolean = false): any {
+
+    return lastItem ? value.concat('. ') : value.concat(', ');
+
   }
 }
