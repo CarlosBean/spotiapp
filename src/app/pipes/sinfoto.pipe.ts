@@ -5,15 +5,15 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class SinfotoPipe implements PipeTransform {
 
-  transform(imagenes: any[]): any {
+  transform(images: any[]): any {
 
     const NO_IMAGE = 'assets/img/noimage.png';
 
-    if (!imagenes) {
+    if (!images) {
       return NO_IMAGE;
     }
 
-    return ( imagenes.length > 0 ) ? imagenes[1].url : NO_IMAGE;
+    return images.length > 0 ? images[0].url : NO_IMAGE;
   }
 
 }
