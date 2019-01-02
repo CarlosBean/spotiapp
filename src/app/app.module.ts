@@ -8,10 +8,14 @@ import { SearchComponent } from './components/search/search.component';
 import { NavbarComponent } from './components/shared/navbar/navbar.component';
 import { APP_ROUTING } from './app.routes';
 import { SpotifyService } from './services/spotify.service';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { SinfotoPipe } from './pipes/sinfoto.pipe';
 import { ArtistComponent } from './components/artist/artist.component';
 import { JoinPipe } from './pipes/join.pipe';
+import { DomseguroPipe } from './pipes/domseguro.pipe';
+import { CardsComponent } from './components/shared/cards/cards.component';
+import { LoadingComponent } from './components/shared/loading/loading.component';
+import { AuthInterceptorService } from './services/auth-interceptor.service';
 
 @NgModule({
   declarations: [
@@ -22,6 +26,9 @@ import { JoinPipe } from './pipes/join.pipe';
     SinfotoPipe,
     ArtistComponent,
     JoinPipe,
+    DomseguroPipe,
+    CardsComponent,
+    LoadingComponent
   ],
   imports: [
     BrowserModule,
@@ -30,7 +37,12 @@ import { JoinPipe } from './pipes/join.pipe';
     APP_ROUTING
   ],
   providers: [
-    SpotifyService
+    SpotifyService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptorService,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })
