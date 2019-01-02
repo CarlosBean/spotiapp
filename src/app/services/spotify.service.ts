@@ -1,55 +1,39 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import 'rxjs/add/operator/map';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class SpotifyService {
 
-  // Se utiliza para obtener la info constantemente, si se hace en el componente la info se destruye.
-  artistas: any[] = [];
-  tracks: any[] = [];
-  urlSpotify = 'https://api.spotify.com/v1/';
-  token = 'BQCzVXN8i_1SdaKwPVrYOV-57JXrLLTDQkTqfQnJb_dWAqqIBCBMJ3F8h0TTm948thXq8yeY_FBXPXfpZcM';
+  constructor(public http: HttpClient) { }
 
-  constructor(public http: HttpClient) {
-    console.log('Servicio Spotify listo');
+  getURL(uri: string): Observable<any> {
+    const URL = environment.api_url + uri;
+    // const headers = new HttpHeaders({ 'authorization': `Bearer ${Token.access_token}` });
+    // console.log('HEADER', Token.access_token);
+    // return this.http.get(URL, { headers });
+    return this.http.get(URL);
   }
 
-  getHeaders(): HttpHeaders {
-    return new HttpHeaders({
-      'authorization': 'Bearer ' + this.token
-    });
+  getArtista(id: string): Observable<any> {
+    return this.getURL(`/artists/${id}`)
+      .pipe(map(res => res));
   }
 
-  getArtista(id: string) {
-    const url = `${this.urlSpotify}artists/${id}`;
-
-    const headers = this.getHeaders();
-
-    return this.http.get(url, { headers });
+  getArtists(termino: string): Observable<any> {
+    return this.getURL(`/search?query=${termino}&type=artist&limit=15`)
+      .pipe(map(res => res['artists'].items));
   }
 
-  getArtistas(termino: string) {
-    const url = `${this.urlSpotify}search?query=${termino}&type=artist&limit=20`;
-
-    const headers = this.getHeaders();
-
-    return this.http.get(url, { headers })
-      .map((response: any) => {
-        this.artistas = response.artists.items;
-        return this.artistas;
-      });
+  getNewReleases(): Observable<any> {
+    return this.getURL('/browse/new-releases?offset=0&limit=6')
+      .pipe(map(res => res['albums'].items));
   }
 
-  getTop(id: string) {
-    const url = `${this.urlSpotify}artists/${id}/top-tracks?country=SE`;
-
-    const headers = this.getHeaders();
-
-    return this.http.get(url, { headers })
-      .map((response: any) => {
-        this.tracks = response.tracks;
-        return this.tracks;
-      });
+  getTop(id: string): Observable<any> {
+    return this.getURL(`/artists/${id}/top-tracks?country=SE`)
+      .pipe(map(res => res['tracks']));
   }
 }
