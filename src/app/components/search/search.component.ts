@@ -3,22 +3,31 @@ import { SpotifyService } from '../../services/spotify.service';
 
 @Component({
   selector: 'app-search',
-  templateUrl: './search.component.html',
-  styles: []
+  templateUrl: './search.component.html'
 })
 export class SearchComponent {
 
   termino = '';
+  artists: any;
+  loading: boolean;
+  error: boolean;
+  errorJson: any;
 
-  constructor(public spotifyService: SpotifyService) {
-  }
+  constructor(public spotify: SpotifyService) { }
 
   buscarArtistas() {
     if (this.termino.length === 0) {
       return;
     }
-    this.spotifyService.getArtistas(this.termino).subscribe(response => {
-      console.log(response);
+
+    this.loading = true;
+    this.spotify.getArtists(this.termino).subscribe(data => {
+      this.loading = false;
+      this.artists = data;
+    }, err => {
+      this.loading = false;
+      this.error = true;
+      this.errorJson = err.error.error;
     });
   }
 

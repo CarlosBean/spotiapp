@@ -1,0 +1,19 @@
+<div class="card-columns">
+    <div
+        class="card"
+        (click)="goToInfo(item)"
+        *ngFor="let item of items">
+        <img
+            class="card-img-top"
+            [src]="item.images | sinfoto"
+            alt="img_not_found">
+        <div class="card-body">
+            <h5 class="card-title text-dark">{{ item.name }}</h5>
+            <span
+                class="badge badge-primary mx-1"
+                *ngFor="let artist of item.artists">
+                {{ artist.name }}
+            </span>
+        </div>
+    </div>
+</div>
